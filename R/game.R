@@ -7,6 +7,8 @@ CashGame <- R6::R6Class(
       questions,
       players
     ) {
+      checkmate::assert_list(questions)
+      checkmate::assert_list(players)
       assert_questions(questions)
       assert_players(players)
 
