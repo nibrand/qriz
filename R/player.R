@@ -16,12 +16,11 @@ Player <- R6::R6Class(
       invisible(self)
     },
 
-    update = \(...) {
-      super$update(...)
-      args <- list(...)
+    update = \(score_increment) {
+      super$update(score_increment)
 
       old_score <- private$.score
-      new_score <- old_score + args$score_increment
+      new_score <- old_score + score_increment
 
       private$.score <- new_score
 

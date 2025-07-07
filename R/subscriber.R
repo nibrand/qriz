@@ -13,7 +13,7 @@ ISubscriber <- R6::R6Class(
 
     update = \(score_increment) {
       is_bad_implementation <-
-        checkmate::test_number(score_increment)
+        !checkmate::test_number(score_increment)
 
       if (is_bad_implementation) {
         rlang::abort(
