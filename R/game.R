@@ -24,6 +24,11 @@ CashGame <- R6::R6Class(
       id_player
     ) {
       question   <- get_question(self$questions, id_question)
+
+      if (question$is_solved) {
+        return(invisible(self))
+      }
+
       is_correct <- question$submit(id_option)
 
       selection <- if (is_correct) get_player else discard_player
@@ -33,9 +38,11 @@ CashGame <- R6::R6Class(
       purrr::walk(
         players_to_update,
         \(e) {
-          e$update(10.0)
+          e$update(question$value)
         }
       )
+
+      invisible(self)
     }
   ),
 
