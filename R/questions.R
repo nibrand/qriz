@@ -168,7 +168,7 @@ get_question <- function(x, id) {
   res <- purrr::detect(
     x,
     \(e) {
-      x$id == id
+      e$id == id
     }
   )
 
