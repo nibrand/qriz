@@ -24,7 +24,8 @@ Question <- R6::R6Class(
       private$.prompt <- prompt
       private$.value  <- value
 
-      private$.is_solved <- FALSE
+      private$.is_answered <- FALSE
+      private$.is_solved   <- FALSE
 
       return(self)
     },
@@ -36,17 +37,19 @@ Question <- R6::R6Class(
       )
     },
 
-    unsolve = \() {
-      private$.is_solved <- FALSE
+    reset = \() {
+      private$.is_answered <- FALSE
+      private$.is_solved   <- FALSE
       invisible(self)
     }
   ),
 
   private = list(
-    .uuid      = NULL,
-    .prompt    = NULL,
-    .value     = NULL,
-    .is_solved = NULL
+    .uuid        = NULL,
+    .prompt      = NULL,
+    .value       = NULL,
+    .is_solved   = NULL,
+    .is_answered = NULL
   ),
 
   active = list(
@@ -60,6 +63,10 @@ Question <- R6::R6Class(
 
     value = \() {
       return(private$.value)
+    },
+
+    is_answered = \() {
+      return(private$.is_answered)
     },
 
     is_solved = \() {
@@ -102,7 +109,8 @@ QuestionMultipleChoice <- R6::R6Class(
           "Unable to find option with id {id}"
         ))
       }
-      private$.is_solved <- selected$is_correct
+      private$.is_answered <- TRUE
+      private$.is_solved   <- selected$is_correct
       return(selected$is_correct)
     }
   ),

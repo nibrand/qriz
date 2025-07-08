@@ -25,7 +25,7 @@ CashGame <- R6::R6Class(
     ) {
       question   <- get_question(self$questions, id_question)
 
-      if (question$is_solved) {
+      if (question$is_answered) {
         return(invisible(self))
       }
 

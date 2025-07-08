@@ -74,6 +74,52 @@ testthat::test_that("Player in CashGame gets no reward after submitting incorrec
 
 
 
+testthat::test_that("Player in CashGame gets no reward after submitting correct answer to a question that has been answered before", {
+  mc_options <- list(
+    list(
+      id = "1.0001",
+      label = "foo",
+      is_correct = TRUE
+    ),
+    list(
+      id = "2.0001",
+      label = "bar",
+      is_correct = FALSE
+    )
+  )
+
+  question <- QuestionMultipleChoice$new(
+    prompt     = "foo",
+    value      = 10.0,
+    mc_options = mc_options
+  )
+
+  player <- Player$new("Bob")
+
+  id_question <- question$id
+  id_player   <- player$id
+
+  game <- CashGame$new(questions = list(question), players = list(player))
+
+  game$submit(
+    id_question = id_question,
+    id_option   = "2.0001",
+    id_player   = id_player
+  )
+
+  testthat::expect_equal(player$score, 0.0)
+
+  game$submit(
+    id_question = id_question,
+    id_option   = "1.0001",
+    id_player   = id_player
+  )
+
+  testthat::expect_equal(player$score, 0.0)
+})
+
+
+
 testthat::test_that("Player in CashGame gets multiple rewards after submitting correct answers back-to-back", {
   mc_options_1 <- list(
     list(
