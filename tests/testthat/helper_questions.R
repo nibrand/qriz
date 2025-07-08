@@ -20,6 +20,11 @@ mock_QuestionMultipleChoice <- function(
       id = "3.0001",
       label = "baz",
       is_correct = FALSE
+    ),
+    list(
+      id = "4.0001",
+      label = "badonq",
+      is_correct = FALSE
     )
   )
 
