@@ -99,7 +99,7 @@ discard_player <- function(x, id) {
   )
 
   if (length(res) == length(x)) {
-    rlang::abort(glue::glue(
+    rlang::warn(glue::glue(
       "Unable to find player with id {id}"
     ))
   }
