@@ -6,7 +6,8 @@ Question <- R6::R6Class(
 
     initialize = \(
       prompt,
-      value
+      value,
+      category = NULL
     ) {
 
       if (class(self)[1L] == "Question") {
@@ -18,11 +19,13 @@ Question <- R6::R6Class(
 
       checkmate::assert_character(prompt, len = 1, any.missing = FALSE, null.ok = FALSE)
       checkmate::assert_number(value)
+      checkmate::assert_string(category, null.ok = TRUE)
 
 
-      private$.uuid   <- ids::uuid(n = 1L, drop_hyphens = TRUE)
-      private$.prompt <- prompt
-      private$.value  <- value
+      private$.uuid     <- ids::uuid(n = 1L, drop_hyphens = TRUE)
+      private$.prompt   <- prompt
+      private$.value    <- value
+      private$.category <- category
 
       private$.is_answered <- FALSE
       private$.is_solved   <- FALSE
@@ -48,6 +51,7 @@ Question <- R6::R6Class(
     .uuid        = NULL,
     .prompt      = NULL,
     .value       = NULL,
+    .category    = NULL,
     .is_solved   = NULL,
     .is_answered = NULL
   ),
@@ -63,6 +67,10 @@ Question <- R6::R6Class(
 
     value = \() {
       return(private$.value)
+    },
+
+    category = \() {
+      return(private$.category)
     },
 
     is_answered = \() {
