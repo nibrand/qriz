@@ -88,6 +88,14 @@ get_player <- function(x, id) {
 
 
 
+add_player <- function(x, player) {
+  checkmate::assert_list(x)
+
+  append(x, player)
+}
+
+
+
 discard_player <- function(x, id) {
   checkmate::assert_list(x)
 
