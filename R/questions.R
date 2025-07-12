@@ -96,9 +96,10 @@ QuestionMultipleChoice <- R6::R6Class(
     initialize = \(
       prompt,
       value,
-      mc_options
+      mc_options,
+      category = NULL
     ) {
-      super$initialize(prompt, value)
+      super$initialize(prompt, value, category)
 
       assert_multiple_choice_options(mc_options)
 
@@ -191,6 +192,27 @@ get_question <- function(x, id) {
   if (length(res) == 0L) {
     rlang::abort(glue::glue(
       "Unable to find question with id {id}"
+    ))
+  }
+
+  res
+}
+
+
+
+get_questions_by_category <- function(x, category) {
+  checkmate::assert_list(x)
+
+  res <- purrr::keep(
+    x,
+    \(e) {
+      e$category == category
+    }
+  )
+
+  if (length(res) == 0L) {
+    rlang::abort(glue::glue(
+      "Unable to find any questions with category {category}"
     ))
   }
 
