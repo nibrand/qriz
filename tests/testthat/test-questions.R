@@ -131,3 +131,52 @@ testthat::test_that("QuestionMultipleChoice cannot be initialized with invalid o
     )
   })
 })
+
+
+
+testthat::test_that("get_question_prop gets categories", {
+  questions <- mock_QuestionMultipleChoice_list(
+    n = 4L,
+    categories = c("a", "b", "a", "b")
+  )
+
+  expectation <- c("a", "b", "a", "b")
+
+  object <- get_question_prop(questions, "category")
+
+  testthat::expect_equal(object, expectation)
+})
+
+
+
+testthat::test_that("get_question_prop gets values", {
+  questions <- list(
+    mock_QuestionMultipleChoice(value = 1),
+    mock_QuestionMultipleChoice(value = 5)
+  )
+
+  expectation <- c(1, 5)
+
+  object <- get_question_prop(questions, "value")
+
+  testthat::expect_equal(object, expectation)
+})
+
+
+
+testthat::test_that("questions can be sorted by category and value", {
+  questions <- list(
+    mock_QuestionMultipleChoice(value = 10, category = "b"),
+    mock_QuestionMultipleChoice(value = 5,  category = "b"),
+    mock_QuestionMultipleChoice(value = 10, category = "a"),
+    mock_QuestionMultipleChoice(value = 5,  category = "a")
+  )
+
+  expected_categories <- c("a", "a", "b", "b")
+  expected_values     <- c(5, 10, 5, 10)
+
+  sorted <- sort_questions_by_category_and_value(questions)
+
+  testthat::expect_equal(get_question_prop(sorted, "category"), expected_categories)
+  testthat::expect_equal(get_question_prop(sorted, "value"), expected_values)
+})

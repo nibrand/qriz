@@ -218,3 +218,33 @@ get_questions_by_category <- function(x, category) {
 
   res
 }
+
+
+
+get_question_prop <- function(x, prop) {
+  checkmate::assert_string(prop)
+
+  if (length(x) == 1L) {
+    return(x[[prop]])
+  }
+
+  purrr::map(
+    x,
+    \(e) {
+      e[[prop]]
+    }
+  ) |>
+    unlist()
+}
+
+
+
+sort_questions_by_category_and_value <- function(x) {
+  checkmate::assert_list(x)
+
+  sort_by(
+    x,
+    get_question_prop(x, "category"),
+    get_question_prop(x, "value")
+  )
+}
