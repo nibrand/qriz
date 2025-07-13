@@ -35,6 +35,7 @@ CashGame <- R6::R6Class(
 
       players_to_update <- selection(self$players, id_player)
 
+      #TODO: Return players that have been updated with purrr::map
       purrr::walk(
         players_to_update,
         \(e) {

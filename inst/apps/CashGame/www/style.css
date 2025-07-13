@@ -1,0 +1,139 @@
+:root {
+  --color-gold: #ffd100;
+}
+
+body {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.link-pill {
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 20px;
+}
+
+.link-pill.link-pill--success {
+  background-color: var(--bs-success);
+  color: white;
+}
+
+.qz-content-wrapper {
+  width: clamp(500px, 70%, 1200px);
+  padding: 0 20px;
+  border: 3px solid grey;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+}
+
+.qz-start-menu {
+  height: 100%;
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5rem;
+}
+
+.qz-start-menu__header {
+  margin-bottom: 5rem;
+  place-self: center;
+}
+
+.qz-player-selection {
+  display: flex;
+  justify-content: center;
+  padding: 0 5rem;
+  gap: 2rem;
+  align-items: center;
+  height: 4rem;
+}
+
+.qz-player-selection__inp-player-name {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0;
+}
+
+.qz-player-selection__inp-player-name > label {
+  margin-bottom: 0 !important;
+}
+
+.qz-player-table {
+  align-self: center;
+}
+
+.qz-player-table__header {
+  font-size: 1.2rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.qz-player-table__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 20ch;
+  border: 1px solid black;
+  padding: 1rem;
+  border-radius: 20px;
+}
+
+.qz-player-table__row {
+  display: flex;
+  align-items: center;
+  padding: 5px 0;
+}
+
+.qz-player-table__name {
+  margin-right: 0.5rem;
+}
+
+
+
+.qz-start-game {
+  place-self: center;
+  height: fit-content;
+  padding: 3rem 0;
+}
+
+.qz-start-game__btn-start {
+  font-size: x-large;
+}
+
+
+.qz-question-panel {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 1.7rem;
+}
+
+.qz-question-panel__category-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  width: 100px;
+}
+
+.qz-question-panel__question-choices {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 1rem;
+}
+
+.qz-question-panel__category-label {
+  font-weight: bold;
+}
+
+.qz-question-panel__category-buttons button {
+  width: 10ch;
+}
+
+
