@@ -88,6 +88,7 @@ make_question_panel_button_onclick_handler <- function(
 
 render_mc_question <- function(
     inputId,
+    inputId_backButton,
     question
 ) {
   checkmate::assert_string(inputId)
@@ -118,6 +119,16 @@ render_mc_question <- function(
     shiny::tags$div(
       class = "qz-mc-options-wrapper",
       buttons
+    ),
+    shiny::tags$div(
+      class = "qz-back-button",
+      shiny::tags$button(
+        "Zurück",
+        "id" = inputId_backButton,
+        "type" = "button",
+        "class" = "qz-mc-option btn btn-default action-button",
+        "onclick" = make_back_button_onclick_handler(inputId_backButton, id_question)
+      )
     )
   )
 }
@@ -153,4 +164,17 @@ make_mc_option_onclick_handler <- function(
       id_option: '%s'
     })
   ", inputId, id_question, id_option)
+}
+
+
+
+make_back_button_onclick_handler <- function(
+    inputId,
+    id_question
+) {
+  sprintf("
+    Shiny.setInputValue('%s', {
+      id_question: '%s'
+    })
+  ", inputId, id_question)
 }

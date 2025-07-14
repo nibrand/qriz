@@ -1,6 +1,5 @@
 ui <- function() {
 
-
   bslib::page_fillable(
     shiny::tags$head(
       shiny::tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
@@ -52,6 +51,30 @@ ui <- function() {
 }
 
 server <- function(input, output, session) {
+
+  show_question_panel <- \() {
+    shiny::insertUI(
+      ".qz-content-wrapper",
+      where = "afterBegin",
+      ui = render_question_panel(
+        inputId = "question_panel",
+        questions = get_context("questions")
+      )
+    )
+  }
+
+  show_single_question <- \(id_question) {
+    questions <- get_context("questions")
+    shiny::insertUI(
+      ".qz-content-wrapper",
+      where = "afterBegin",
+      ui = render_mc_question(
+        inputId = "inp_mc_question",
+        inputId_backButton = "btn_back_to_panel",
+        question = get_question(questions, id_question)
+      )
+    )
+  }
 
   players <- shiny::reactiveVal(list())
   game    <- NULL
@@ -120,30 +143,26 @@ server <- function(input, output, session) {
 
       shiny::removeUI(".qz-content-wrapper *", multiple = TRUE)
 
-      shiny::insertUI(
-        ".qz-content-wrapper",
-        where = "afterBegin",
-        ui = render_question_panel(
-          inputId = "lol",
-          questions = list(
-            mock_QuestionMultipleChoice(value = 10, category = "Geschichte"),
-            mock_QuestionMultipleChoice(value = 10,  category = "Sport"),
-            mock_QuestionMultipleChoice(value = 10, category = "Erdkunde"),
-            mock_QuestionMultipleChoice(value = 10,  category = "Kultur"),
-            mock_QuestionMultipleChoice(value = 10,  category = "Politik"),
-            mock_QuestionMultipleChoice(value = 5, category = "Geschichte"),
-            mock_QuestionMultipleChoice(value = 5,  category = "Sport"),
-            mock_QuestionMultipleChoice(value = 5, category = "Erdkunde"),
-            mock_QuestionMultipleChoice(value = 5,  category = "Kultur"),
-            mock_QuestionMultipleChoice(value = 5,  category = "Politik"),
-            mock_QuestionMultipleChoice(value = 1, category = "Geschichte"),
-            mock_QuestionMultipleChoice(value = 1,  category = "Sport"),
-            mock_QuestionMultipleChoice(value = 1, category = "Erdkunde"),
-            mock_QuestionMultipleChoice(value = 1,  category = "Kultur"),
-            mock_QuestionMultipleChoice(value = 1,  category = "Politik")
-          )
-        )
-      )
+      show_question_panel()
+    }
+  )
+
+  shiny::observeEvent(
+    input$question_panel,
+    {
+      id_question <- input$question_panel[["id_question"]]
+
+      shiny::removeUI(".qz-content-wrapper *", multiple = TRUE)
+      show_single_question(id_question)
+    }
+  )
+
+  shiny::observeEvent(
+    input$btn_back_to_panel,
+    {
+      shiny::removeUI(".qz-content-wrapper *", multiple = TRUE)
+
+      show_question_panel()
     }
   )
 }
