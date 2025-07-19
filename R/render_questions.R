@@ -80,7 +80,7 @@ make_question_panel_button_onclick_handler <- function(
   sprintf("
     Shiny.setInputValue('%s', {
       id_question: '%s'
-    })
+    }, {priority: 'event'})
   ", inputId, id_question)
 }
 
@@ -112,6 +112,7 @@ render_mc_question <- function(
     shiny::tagList()
 
   shiny::tags$div(
+    class = "qz-mc-wrapper",
     shiny::tags$div(
       class = "qz-mc-prompt",
       shiny::tags$span(prompt)
@@ -162,7 +163,7 @@ make_mc_option_onclick_handler <- function(
     Shiny.setInputValue('%s', {
       id_question: '%s',
       id_option: '%s'
-    })
+    }, {priority: 'event'})
   ", inputId, id_question, id_option)
 }
 
@@ -175,6 +176,6 @@ make_back_button_onclick_handler <- function(
   sprintf("
     Shiny.setInputValue('%s', {
       id_question: '%s'
-    })
+    }, {priority: 'event'})
   ", inputId, id_question)
 }
