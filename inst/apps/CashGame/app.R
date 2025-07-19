@@ -9,41 +9,48 @@ ui <- function() {
     shiny::tags$body(
       shiny::tags$div(
 
-        class = "qz-content-wrapper",
+        class = "qz-page-wrapper",
 
-        tags$div(
-          class = "qz-start-menu",
+        shiny::tags$div(
+          class = "qz-content-wrapper",
+          shiny::tags$div(
+            class = "qz-start-menu",
 
-          shiny::tags$h1(
-            class = "qz-start-menu__header",
-            "Willkommen"
+            shiny::tags$h1(
+              class = "qz-start-menu__header",
+              "Willkommen"
+            ),
+
+            shiny::tags$div(
+              class = "qz-player-selection",
+              shiny::textInput(
+                inputId = "inp_player_name",
+                label = "Name"
+              ) |>
+                shiny::tagAppendAttributes(class = "qz-player-selection__inp-player-name"),
+              shiny::actionLink(
+                inputId = "btn_create_player",
+                label = "Spieler hinzufügen"
+              ) |>
+                shiny::tagAppendAttributes(class = "link-pill link-pill--success")
+            ),
+
+            shiny::uiOutput("tbl_players")
           ),
 
           shiny::tags$div(
-            class = "qz-player-selection",
-            shiny::textInput(
-              inputId = "inp_player_name",
-              label = "Name"
+            class = "qz-start-game",
+            shiny::actionButton(
+              inputId = "btn_start_game",
+              label = "Spiel starten"
             ) |>
-              shiny::tagAppendAttributes(class = "qz-player-selection__inp-player-name"),
-            shiny::actionLink(
-              inputId = "btn_create_player",
-              label = "Spieler hinzufügen"
-            ) |>
-              shiny::tagAppendAttributes(class = "link-pill link-pill--success")
-          ),
-
-          shiny::uiOutput("tbl_players")
+              shiny::tagAppendAttributes(class = "qz-start-game__btn-start") |>
+              shinyjs::disabled()
+          )
         ),
 
         shiny::tags$div(
-          class = "qz-start-game",
-          shiny::actionButton(
-            inputId = "btn_start_game",
-            label = "Spiel starten"
-          ) |>
-            shiny::tagAppendAttributes(class = "qz-start-game__btn-start") |>
-            shinyjs::disabled()
+          class = "qz-players-wrapper"
         )
       )
     )
@@ -77,7 +84,7 @@ server <- function(input, output, session) {
   }
 
   players <- shiny::reactiveVal(list())
-  game    <- NULL
+  game    <- shiny::reactiveVal(NULL)
 
   shiny::observeEvent(
     input$btn_create_player,
@@ -136,14 +143,22 @@ server <- function(input, output, session) {
   shiny::observeEvent(
     input$btn_start_game,
     {
-      game <- CashGame$new(
+      new_game <- CashGame$new(
         players = players(),
-        questions = mock_QuestionMultipleChoice() |> list()
+        questions = get_context("questions")
       )
+
+      game(new_game)
 
       shiny::removeUI(".qz-content-wrapper *", multiple = TRUE)
 
       show_question_panel()
+
+      shiny::insertUI(
+        ".qz-players-wrapper",
+        where = "afterBegin",
+        render_player_cards(players())
+      )
     }
   )
 
@@ -154,6 +169,37 @@ server <- function(input, output, session) {
 
       shiny::removeUI(".qz-content-wrapper *", multiple = TRUE)
       show_single_question(id_question)
+    }
+  )
+
+  shiny::observeEvent(
+    input$inp_mc_question,
+    {
+      id_question <- input$inp_mc_question[["id_question"]]
+      id_option   <- input$inp_mc_question[["id_option"]]
+
+      id_player <- players()[[1]]$id   # total BS, temporary solution
+
+      updated_players <- game()$submit(
+        id_question = id_question,
+        id_option   = id_option,
+        id_player   = id_player
+      )
+
+      player_updates <- purrr::map(
+        updated_players,
+        \(e) {
+          list(
+            id = e$id,
+            score = e$score
+          )
+        }
+      )
+
+      session$sendCustomMessage(
+        "qz-update-player-card",
+        jsonlite::toJSON(player_updates)
+      )
     }
   )
 

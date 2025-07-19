@@ -23,10 +23,10 @@ CashGame <- R6::R6Class(
       id_option,
       id_player
     ) {
-      question   <- get_question(self$questions, id_question)
+      question <- get_question(self$questions, id_question)
 
       if (question$is_answered) {
-        return(invisible(self))
+        return(NULL)
       }
 
       is_correct <- question$submit(id_option)
@@ -35,7 +35,6 @@ CashGame <- R6::R6Class(
 
       players_to_update <- selection(self$players, id_player)
 
-      #TODO: Return players that have been updated with purrr::map
       purrr::walk(
         players_to_update,
         \(e) {
@@ -43,7 +42,7 @@ CashGame <- R6::R6Class(
         }
       )
 
-      invisible(self)
+      return(players_to_update)
     }
   ),
 

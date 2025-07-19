@@ -47,7 +47,7 @@ make_player_table_delete_button_input_handler <- function(
   sprintf("
     Shiny.setInputValue('%s', {
       id_player: '%s'
-    })
+    }, {priority: 'event'})
   ", inputId, id_player)
 }
 
