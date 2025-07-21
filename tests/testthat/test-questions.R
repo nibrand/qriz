@@ -77,6 +77,52 @@ testthat::test_that("QuestionMultipleChoice object can be solved", {
 
 
 
+testthat::test_that("QuestionMultipleChoice object cannot be solved after wrong answer", {
+
+  mc_options <- list(
+    list(
+      id = "1.0001",
+      label = "foo",
+      is_correct = TRUE
+    ),
+    list(
+      id = "2.0001",
+      label = "bar",
+      is_correct = FALSE
+    ),
+    list(
+      id = "3.0001",
+      label = "baz",
+      is_correct = FALSE
+    )
+  )
+
+  object <- QuestionMultipleChoice$new(
+    prompt     = "foo",
+    value      = 10.0,
+    mc_options = mc_options
+  )
+
+  testthat::expect_false(object$is_answered)
+  testthat::expect_false(object$is_solved)
+
+  object$submit("2.0001")
+
+  testthat::expect_true(object$is_answered)
+  testthat::expect_false(object$is_solved)
+
+  testthat::expect_equal(object$id_option_answered, "2.0001")
+
+  object$submit("1.0001")
+
+  testthat::expect_true(object$is_answered)
+  testthat::expect_false(object$is_solved)
+
+  testthat::expect_equal(object$id_option_answered, "2.0001")
+})
+
+
+
 testthat::test_that("QuestionMultipleChoice cannot be initialized with invalid options", {
 
   mc_options_ambiguous_id <- list(

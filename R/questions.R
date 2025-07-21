@@ -118,19 +118,39 @@ QuestionMultipleChoice <- R6::R6Class(
           "Unable to find option with id {id}"
         ))
       }
-      private$.is_answered <- TRUE
-      private$.is_solved   <- selected$is_correct
+
+      if (!private$.is_answered) {
+        private$.id_option_answered <- id
+        private$.is_answered        <- TRUE
+        private$.is_solved          <- selected$is_correct
+      }
+
       return(selected$is_correct)
     }
   ),
 
   private = list(
-    .mc_options = NULL
+    .mc_options         = NULL,
+    .id_option_answered = NULL
   ),
 
   active = list(
     mc_options = \() {
       return(private$.mc_options)
+    },
+
+    id_option_answered = \() {
+      return(private$.id_option_answered)
+    },
+
+    id_option_correct = \() {
+      option_correct <- purrr::detect(
+        private$.mc_options,
+        \(e) {
+          e$is_correct
+        }
+      )
+      option_correct$id
     }
   )
 )
