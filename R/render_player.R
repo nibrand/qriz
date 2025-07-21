@@ -24,14 +24,14 @@ render_player_table <- function(
     tagList()
 
   body <- shiny::tags$div(
-    class = "qz-player-table__body",
+    class = "qz-player-table__body qz-player-card__body",
     !!!rows
   )
 
   shiny::tags$div(
-    class = "qz-player-table",
+    class = "qz-player-table qz-player-card-wrapper",
     shiny::tags$div(
-      class = "qz-player-table__header",
+      class = "qz-player-table__header qz-player-card__header",
       "Spieler:innen"
     ),
     body

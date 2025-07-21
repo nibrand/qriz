@@ -62,11 +62,19 @@ render_question_panel_button <- function(
   checkmate::assert_string(inputId)
   checkmate::assert_class(question, "QuestionMultipleChoice")
 
+  btn_class <- if (question$is_answered && question$is_solved) {
+    "btn-success"
+  } else if (question$is_answered) {
+    "btn-danger"
+  } else {
+    "btn-secondary"
+  }
+
   shiny::tags$button(
     question$value,
     "id" = question$id,
     "type" = "button",
-    "class" = "btn btn-default action-button",
+    "class" = paste("btn btn-default action-button", btn_class),
     "onclick" = make_question_panel_button_onclick_handler(inputId, question$id)
   )
 }
@@ -98,14 +106,27 @@ render_mc_question <- function(
   id_question <- question$id
   options     <- question$mc_options
 
+  show_solution      <- question$is_answered
+  id_option_correct  <- question$id_option_correct
+  id_option_answered <- question$id_option_answered
+
   buttons <- purrr::map(
     options,
     \(e) {
+      class <- if (show_solution && e$id == id_option_correct) {
+        "btn-success"
+      } else if (show_solution && e$id == id_option_answered) {
+        "btn-danger"
+      } else {
+        "btn-secondary"
+      }
+
       render_mc_option(
         inputId     = inputId,
         label       = e$label,
         id_question = id_question,
-        id_option   = e$id
+        id_option   = e$id,
+        class       = class
       )
     }
   ) |>
@@ -114,12 +135,15 @@ render_mc_question <- function(
   shiny::tags$div(
     class = "qz-mc-wrapper",
     shiny::tags$div(
-      class = "qz-mc-prompt",
-      shiny::tags$span(prompt)
-    ),
-    shiny::tags$div(
-      class = "qz-mc-options-wrapper",
-      buttons
+      class = "qz-mc-question",
+      shiny::tags$div(
+        class = "qz-mc-question__prompt",
+        shiny::tags$span(prompt)
+      ),
+      shiny::tags$div(
+        class = "qz-mc-question__options",
+        buttons
+      )
     ),
     shiny::tags$div(
       class = "qz-back-button",
@@ -127,7 +151,7 @@ render_mc_question <- function(
         "Zurück",
         "id" = inputId_backButton,
         "type" = "button",
-        "class" = "qz-mc-option btn btn-default action-button",
+        "class" = "qz-mc-option btn btn-default action-button btn-secondary",
         "onclick" = make_back_button_onclick_handler(inputId_backButton, id_question)
       )
     )
@@ -140,14 +164,15 @@ render_mc_option <- function(
     inputId,
     label,
     id_question,
-    id_option
+    id_option,
+    class = NULL
 ) {
 
   shiny::tags$button(
     label,
     "id" = id_option,
     "type" = "button",
-    "class" = "qz-mc-option btn btn-default action-button",
+    "class" = paste("qz-mc-option btn btn-default action-button btn-secondary", class),
     "onclick" = make_mc_option_onclick_handler(inputId, id_question, id_option)
   )
 }

@@ -16,26 +16,28 @@ ui <- function() {
           shiny::tags$div(
             class = "qz-start-menu",
 
-            shiny::tags$h1(
+            shiny::tags$div(
               class = "qz-start-menu__header",
-              "Willkommen"
+              get_context("txt_welcome")
             ),
 
             shiny::tags$div(
               class = "qz-player-selection",
-              shiny::textInput(
-                inputId = "inp_player_name",
-                label = "Name"
-              ) |>
-                shiny::tagAppendAttributes(class = "qz-player-selection__inp-player-name"),
-              shiny::actionLink(
-                inputId = "btn_create_player",
-                label = "Spieler hinzufügen"
-              ) |>
-                shiny::tagAppendAttributes(class = "link-pill link-pill--success")
-            ),
-
-            shiny::uiOutput("tbl_players")
+              shiny::tags$div(
+                class = "qz-player-selection__add-player",
+                shiny::textInput(
+                  inputId = "inp_player_name",
+                  label = "Name"
+                ) |>
+                  shiny::tagAppendAttributes(class = "qz-player-selection__inp-player-name"),
+                shiny::actionLink(
+                  inputId = "btn_create_player",
+                  label = "Spieler hinzufügen"
+                ) |>
+                  shiny::tagAppendAttributes(class = "link-pill link-pill--success")
+              ),
+              shiny::uiOutput("tbl_players")
+            )
           ),
 
           shiny::tags$div(
@@ -180,6 +182,24 @@ server <- function(input, output, session) {
 
       id_player <- players()[[1]]$id   # total BS, temporary solution
 
+      # Update option display
+      question <- get_question(get_context("questions"), id_question)
+
+      if (!question$is_answered) {
+        id_correct        <- question$id_option_correct
+        is_option_correct <- id_option == id_correct
+
+        session$sendCustomMessage(
+          "qz-update-mc-options",
+          jsonlite::toJSON(list(
+            id_correct = id_correct,
+            id_wrong   = id_option
+          )[c(TRUE, !is_option_correct)])
+        )
+      }
+
+
+      # Update players
       updated_players <- game()$submit(
         id_question = id_question,
         id_option   = id_option,

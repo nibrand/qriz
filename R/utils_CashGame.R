@@ -23,7 +23,8 @@ launch_CashGame <- function(file = NULL) {
           mc_options = e$mc_options
         )
       }
-    )
+    ) |>
+    sort_questions_by_category_and_value()
 
 
   set_context("txt_welcome", welcome)
